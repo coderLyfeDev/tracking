@@ -1,10 +1,10 @@
-package dev.lydtech.tracking.demo;
+package dev.lydtech.tracking;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoApplicationTests {
+class TrackingApplicationTests {
 
 	@Test
 	void contextLoads() {
