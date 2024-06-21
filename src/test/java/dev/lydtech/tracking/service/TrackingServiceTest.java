@@ -1,5 +1,6 @@
 package dev.lydtech.tracking.service;
 
+import dev.lydtech.tracking.message.DispatchCompleted;
 import dev.lydtech.tracking.message.DispatchPrepared;
 import dev.lydtech.tracking.message.TrackingStatusUpdated;
 import dev.lydtech.tracking.util.TestEventData;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import java.time.LocalDate;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.UUID.randomUUID;
@@ -42,6 +44,16 @@ class TrackingServiceTest {
     }
 
     @Test
+    void processCompleted() throws Exception{
+
+        when(kafkaProducerMock.send(anyString(), ArgumentMatchers.any(TrackingStatusUpdated.class))).thenReturn(mock(CompletableFuture.class));
+
+        DispatchCompleted testEvent = TestEventData.buildDispatchCompleted(randomUUID(), LocalDate.now().toString());
+        service.processCompleted(testEvent);
+        verify(kafkaProducerMock, times(1)).send(eq("tracking.status"), ArgumentMatchers.any(TrackingStatusUpdated.class));
+    }
+
+    @Test
     void process_throwsException(){
 
         DispatchPrepared testEvent = TestEventData.buildDispatchPrepared(randomUUID());
@@ -49,6 +61,19 @@ class TrackingServiceTest {
         doThrow(new RuntimeException("Processing failure")).when(kafkaProducerMock).send(eq("tracking.status"), ArgumentMatchers.any(TrackingStatusUpdated.class));
 
         Exception exception = assertThrows(RuntimeException.class, () -> service.process(testEvent));
+
+        verify(kafkaProducerMock, times(1)).send(eq("tracking.status"), ArgumentMatchers.any(TrackingStatusUpdated.class));
+        assertThat(exception.getMessage(), equalTo("Processing failure"));
+    }
+
+    @Test
+    void processCompleted_throwsException(){
+
+        DispatchCompleted testEvent = TestEventData.buildDispatchCompleted(randomUUID(), LocalDate.now().toString());
+
+        doThrow(new RuntimeException("Processing failure")).when(kafkaProducerMock).send(eq("tracking.status"), ArgumentMatchers.any(TrackingStatusUpdated.class));
+
+        Exception exception = assertThrows(RuntimeException.class, () -> service.processCompleted(testEvent));
 
         verify(kafkaProducerMock, times(1)).send(eq("tracking.status"), ArgumentMatchers.any(TrackingStatusUpdated.class));
         assertThat(exception.getMessage(), equalTo("Processing failure"));

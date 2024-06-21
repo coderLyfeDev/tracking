@@ -1,5 +1,6 @@
 package dev.lydtech.tracking.handler;
 
+import dev.lydtech.tracking.message.DispatchCompleted;
 import dev.lydtech.tracking.message.DispatchPrepared;
 import dev.lydtech.tracking.service.TrackingService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,16 @@ public class TrackingHandler {
         log.info("Message received: "+ payload);
         try {
             trackingService.process(payload);
+        } catch (Exception e){
+            log.error("Processing failure", e);
+        }
+    }
+
+    @KafkaHandler
+    public void listen(DispatchCompleted payload){
+        log.info("Message received: "+ payload);
+        try {
+            trackingService.processCompleted(payload);
         } catch (Exception e){
             log.error("Processing failure", e);
         }

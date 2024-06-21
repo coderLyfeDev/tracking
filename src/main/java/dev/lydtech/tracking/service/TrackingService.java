@@ -1,5 +1,6 @@
 package dev.lydtech.tracking.service;
 
+import dev.lydtech.tracking.message.DispatchCompleted;
 import dev.lydtech.tracking.message.DispatchPrepared;
 import dev.lydtech.tracking.message.TrackingStatusUpdated;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,16 @@ public class TrackingService {
                         .orderID(dispatchPrepared.getOrderId())
                                 .status("PREPARING")
                                         .build();
+        kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
+    }
+
+    public void processCompleted(DispatchCompleted dispatchCompleted) throws Exception{
+        log.info("Received message: "+ dispatchCompleted);
+
+        TrackingStatusUpdated trackingStatusUpdated = TrackingStatusUpdated.builder()
+                .orderID(dispatchCompleted.getOrderId())
+                .status("COMPLETED")
+                .build();
         kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
     }
 }

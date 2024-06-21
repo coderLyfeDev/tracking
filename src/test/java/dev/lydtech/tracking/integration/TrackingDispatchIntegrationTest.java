@@ -1,5 +1,6 @@
 package dev.lydtech.tracking.integration;
 import dev.lydtech.tracking.DispatchConfiguration;
+import dev.lydtech.tracking.message.DispatchCompleted;
 import dev.lydtech.tracking.message.DispatchPrepared;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.UUID.randomUUID;
@@ -60,7 +63,7 @@ public class TrackingDispatchIntegrationTest {
         AtomicInteger dispatchTrackingCounter = new AtomicInteger(0);
 
         @KafkaListener(groupId = "KafkaIntegrationTest", topics = DISPATCH_TRACKING_TOPIC)
-        void recievedDispatchTrackingRequest(@Payload DispatchPrepared payload){
+        void recievedDispatchTrackingRequest(@Payload Object payload){
             log.debug("Received request for dispatch status: "+payload);
             dispatchTrackingCounter.incrementAndGet();
         }
@@ -79,6 +82,16 @@ public class TrackingDispatchIntegrationTest {
 
         DispatchPrepared dispatchPrepared = new DispatchPrepared(randomUUID());
         sendMessage(DISPATCH_TRACKING_TOPIC, dispatchPrepared);
+
+        await().atMost(3, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS).
+                until(testListener.dispatchTrackingCounter:: get, equalTo(1));
+
+    }
+
+    @Test
+    public void TrackingDispatchCompletedTest() throws Exception {
+        DispatchCompleted dispatchCompleted = new DispatchCompleted(randomUUID(), LocalDate.now().toString());
+        sendMessage(DISPATCH_TRACKING_TOPIC, dispatchCompleted);
 
         await().atMost(3, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS).
                 until(testListener.dispatchTrackingCounter:: get, equalTo(1));
