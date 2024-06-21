@@ -1,6 +1,5 @@
-package dev.lydtech.tracking;
+package dev.kafka.dispatch;
 
-import dev.lydtech.tracking.message.DispatchPrepared;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -18,11 +17,11 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
-@ComponentScan(basePackages = {"dev.lydtech"})
+@ComponentScan(basePackages = {"dev.kafka"})
 @Configuration
 public class DispatchConfiguration {
 
-    private static String TRUSTED_PACKAGES = "dev.lydtech.tracking.message";
+    private static String TRUSTED_PACKAGES = "dev.kafka.dispatch.message";
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory){
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();

@@ -1,9 +1,9 @@
-package dev.lydtech.tracking.service;
+package dev.kafka.dispatch.service;
 
-import dev.lydtech.tracking.message.DispatchCompleted;
-import dev.lydtech.tracking.message.DispatchPrepared;
-import dev.lydtech.tracking.message.TrackingStatusUpdated;
-import dev.lydtech.tracking.util.TestEventData;
+import dev.kafka.dispatch.message.DispatchCompleted;
+import dev.kafka.dispatch.message.DispatchPrepared;
+import dev.kafka.dispatch.message.TrackingStatusUpdated;
+import dev.kafka.dispatch.util.TestEventData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;

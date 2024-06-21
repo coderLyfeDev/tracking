@@ -1,7 +1,7 @@
-package dev.lydtech.tracking.integration;
-import dev.lydtech.tracking.DispatchConfiguration;
-import dev.lydtech.tracking.message.DispatchCompleted;
-import dev.lydtech.tracking.message.DispatchPrepared;
+package dev.kafka.dispatch.integration;
+import dev.kafka.dispatch.DispatchConfiguration;
+import dev.kafka.dispatch.message.DispatchCompleted;
+import dev.kafka.dispatch.message.DispatchPrepared;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

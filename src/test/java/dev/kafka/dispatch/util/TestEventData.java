@@ -1,7 +1,7 @@
-package dev.lydtech.tracking.util;
+package dev.kafka.dispatch.util;
 
-import dev.lydtech.tracking.message.DispatchCompleted;
-import dev.lydtech.tracking.message.DispatchPrepared;
+import dev.kafka.dispatch.message.DispatchCompleted;
+import dev.kafka.dispatch.message.DispatchPrepared;
 import java.util.UUID;
 
 public class TestEventData {
